@@ -4,7 +4,7 @@ public class Arvore {
 	private Celula raiz;
 	private int size;
 	
-	private class Celula implements Element{//a classe implementa a interface element pra n�o acessar os
+	private class Celula implements Element{//a classe implementa a interface element pra não acessar os
 		private Object data;                //dados diretamente
 		private Celula pai;
 		private Celula noEsquerda;
@@ -81,8 +81,33 @@ public class Arvore {
 		((Celula) e).setData(o);
 	}
 	
-	public class Iterador implements Iterator{// o iterador � usado com fila, pra isso eu implementei ela 
-		private IFila fila = new Fila();	//e instanciei atrav�s da interface
+	public void remover(Element e){ // Remove uma Célula da Árvore.
+		 Celula n = (Celula)e;
+		 if(n.getNoEsquerda()!=null && n.getNoDireita()!=null){ // Se n tiver dois filhos.
+			 n.setData(n.getNoEsquerda().getData());
+			 remover(n.getNoEsquerda());// Chamada recursiva do método, remove o filho da esquerda.
+		 }else if(n.getNoEsquerda()!=null || n.getNoDireita()!=null){ // Se n tiver um filho.
+			Celula c = n.getNoEsquerda()!=null ? n.getNoEsquerda() : n.getNoDireita();
+			substituir(n, c);// Método substituir.
+		 }else{ // Se n não tiver filhos.
+			 substituir(n, null); // Método substituir.
+		 }
+		 size--; 	// Decrementa o tamanho da Árvore.	
+	}
+	private void substituir(Celula n, Celula c){ // Recebe o nó a ser removido e o substituto.
+		 if(n == raiz){ // Se n for o pai.
+		 raiz = c; 
+		 }else{ 
+			 if(n == n.getPai().getNoEsquerda()){ // Vê se n está do lado esquerdo do pai.
+				 n.getPai().setNoEsquerda(c);
+			 }else{ // Se n estiver do lado direito do pai.
+				 n.getPai().setNoDireita(c);
+			 }
+		 } 
+	}
+	
+	public class Iterador implements Iterator{// o iterador é usado com fila, pra isso eu implementei ela 
+		private IFila fila = new Fila();	//e instanciei através da interface
 		
 		public Iterador(){
 			fila.inserirFinal(raiz);
